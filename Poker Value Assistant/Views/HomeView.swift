@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct HomeView: View {
+    @StateObject private var dataManager = DataManager.shared
+    @State private var showOnboarding = false
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -75,6 +78,15 @@ struct HomeView: View {
             .background(Color.white)
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .onAppear {
+            // Показываем онбординг только при первом запуске покерного приложения
+            if !dataManager.preferences.hasCompletedOnboarding {
+                showOnboarding = true
+            }
+        }
+        .fullScreenCover(isPresented: $showOnboarding) {
+            OnboardingView(isPresented: $showOnboarding)
+        }
     }
 }
 
